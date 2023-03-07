@@ -86,7 +86,7 @@ function App() {
         <nav>
           <Link to="/">Home</Link>
           <Link to="/articles">Articles</Link>
-          <Link to="/admin">Add article</Link>
+          <Link to="/admin">Admin panel</Link>
         </nav>
         <Routes>
           <Route index element={<Home/>}/>

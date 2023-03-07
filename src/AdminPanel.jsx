@@ -2,6 +2,7 @@
 import {articles, capitalize, categories} from "./App";
 
 let loggedIn, setLoggedIn;
+let reload;
 
 const loginSubmit = event => {
     event.preventDefault();
@@ -23,8 +24,27 @@ const addArticle = event => {
     event.target.reset();
 }
 
+const useReload = () => {
+    let [value, setValue] = useState(0);
+    return () => setValue(value + 1);
+}
+
+const addCategory = event => {
+    event.preventDefault();
+    const categoryName = event.target.category.value;
+    if (categories.includes(categoryName)) {
+        alert("This category already exists!");
+        event.target.reset();
+        return false;
+    }
+    alert("Category successfully added");
+    categories.push(categoryName);
+    event.target.reset();
+    reload();
+}
 
 export default function AdminPanel() {
+    reload = useReload();
     [loggedIn, setLoggedIn] = useState(loggedIn);
     return (
         <div className="admin-panel">
@@ -38,17 +58,24 @@ export default function AdminPanel() {
                 </form>
             )}
             {loggedIn && (
-                <form onSubmit={addArticle}>
-                    <h2>Add new article</h2>
-                    <label htmlFor="title">Title: <input type="text" id="title" name="title" required={true}/></label>
-                    <label htmlFor="text">Text: <textarea name="text" id="text" cols="30" rows="10" required={true}/></label>
-                    <label htmlFor="category">Category:<select id="category" name="category" required={true}>
-                        <option value="">---Select an option---</option>
-                        {categories.map(category => <option value={category}>{capitalize(category)}</option>)}
-                    </select></label>
-                    <label htmlFor="photo">Photo: <input type="file" id="photo" name="photo" accept="image/png" required={true}/></label>
-                    <input type="submit" value="Add"/>
-                </form>
+                <div className="forms">
+                    <form onSubmit={addArticle}>
+                        <h2>Add new article</h2>
+                        <label htmlFor="title">Title: <input type="text" id="title" name="title" required={true}/></label>
+                        <label htmlFor="text">Text: <textarea name="text" id="text" cols="30" rows="10" required={true}/></label>
+                        <label htmlFor="category">Category:<select id="category" name="category" required={true}>
+                            <option value="">---Select an option---</option>
+                            {categories.map(category => <option value={category}>{capitalize(category)}</option>)}
+                        </select></label>
+                        <label htmlFor="photo">Photo: <input type="file" id="photo" name="photo" accept="image/png" required={true}/></label>
+                        <input type="submit" value="Add"/>
+                    </form>
+                    <form onSubmit={addCategory}>
+                        <h2>Add new category</h2>
+                        <label htmlFor="category">Category name: <input type="text" name="category" id="category"/></label>
+                        <input type="submit" value="Add"/>
+                    </form>
+                </div>
             )}
         </div>
     );
